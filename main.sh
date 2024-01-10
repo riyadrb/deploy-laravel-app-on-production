@@ -3,7 +3,7 @@
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
-command_exists() {
+function command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -12,6 +12,7 @@ read -p "Project Name: " PROJECT_NAME
 read -p "Enter GitHub Repository URL: " GITHUB_URL
 read -p "MySQL Username: " DB_USERNAME
 read -s -p "Database Password: " DB_PASSWORD
+echo
 read -p "Enter Domain Name: " DOMAIN_NAME
 read -p "Port Number: " LISTEN_PORT
 
@@ -37,11 +38,11 @@ git clone $GITHUB_URL . || { echo "Failed to Clone Repository. Exiting"; exit 1;
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
 
-# install composer and laravel
+# Installing composer and laravel
 function install_laravel() {
     if ! command_exists composer &> /dev/null; then
         
-        # install composer
+        # Installing composer
         if ! command_exists composer; then
             echo "Composer is not installed"
             sudo apt install php-cli php-mbstring
@@ -68,15 +69,16 @@ function install_laravel() {
     fi
 }
 
-# function call for installing laravel 
+# Function call for installing laravel 
 install_laravel
 
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
-# isntall Nginx
+# Installing Nginx
 if ! command_exists nginx; then 
     echo "Nginx Installing"
+    sudo apt update
     sudo apt install nginx -y
 fi
 
@@ -87,7 +89,6 @@ fi
 function install_php_and_libraries() {
     PHP_VERSION=$1
 
-    sudo apt update
     sudo apt install -y \
     php${PHP_VERSION}-fpm \
     php${PHP_VERSION}-mysql \
@@ -117,113 +118,92 @@ function install_php_and_libraries() {
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
-# switching php version
+# Switching php version
 function switch_php_version() {
     if [ "$1" == "7" ]; then
         sudo update-alternatives --set php /usr/bin/php${PHP_VERSION}
     elif [ "$1" == "8" ]; then
         sudo update-alternatives --set php /usr/bin/php${PHP_VERSION}
     else
-        echo "Unsupported PHP version. switching funtion called"
-        sleep 5
+        echo "Unsupported PHP Version."
+        
     fi
 }
 
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
-# detecting php version according to app
+# Detecting php version according to app
 function get_laravel_php_version() {
     LARAVEL_PATH="/var/www/$PROJECT_NAME"  
-
+    #<<<------------------------------------------------>>>
     if [ -f "${LARAVEL_PATH}/composer.json" ]; then
 
         # jq json perser tool
-
         PHP_VERSION=$(jq -r '.require.php' "${LARAVEL_PATH}/composer.json" | sed -E 's/\^([0-9]+\.[0-9]+)/\1/g' | tr '|' '\n' | sort -Vr | head -n1)
 
-        echo "Detected PHP version: php${PHP_VERSION}"
+        echo "Detected PHP Version: php${PHP_VERSION}"
 
-            # Checking if the detected PHP version is below 7.4 and setting it to 7.4 or more
+            # Checking if the Detected PHP Version is below 7.4 and setting it to 7.4
             if [[ "$(echo -e "7.4\n${PHP_VERSION}" | sort -V | head -n1)" != "7.4" ]]; then
                 PHP_VERSION="7.4"
             elif [[ "$PHP_VERSION" == "8.0" ]]; then
                 PHP_VERSION="8.1"
             fi
 
-
-            echo "Adjusted PHP version:php${PHP_VERSION}"
-
+            echo "Adjusted PHP Version:php${PHP_VERSION}"
 
 
 
+        #<<<------------------------------------------------>>>
         if [ "$PHP_VERSION" != "null" ]; then
             echo "Laravel app requires PHP version: php${PHP_VERSION}"
-
-            echo "get entered the main condition"
-            sleep 2
-            
             PHP_MAJOR_VERSION=$(echo "$PHP_VERSION" | sed 's/\^//' | cut -d '.' -f 1)
 
+            # echo "Major version:$PHP_MAJOR_VERSION"
 
-            echo "get entered the 2nd condition"
-            echo "Major version:$PHP_MAJOR_VERSION"
-            sleep 2
-
-
-            # -------------------------------------------->>>
+            #<<<------------------------------------------------>>>
             # Check for supported PHP versions
             if [[ "$PHP_MAJOR_VERSION" == "7" ]]; then
-                echo "get entered the 3rd condition after checking major version "
-
-                sleep 10
-
                 if ! command_exists "php${PHP_VERSION}"; then
-                    sudo add-apt-repository ppa:ondrej/php -y   #Added ondrej repo as ubuntu 22.04's default does not have php7.4
+                    sudo add-apt-repository ppa:ondrej/php -y   #Added Ondrej repo as ubuntu 22.04's default does not have php7.4
                     sudo apt update
-
                     echo "PHP "$PHP_VERSION" is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y  # It will avoid installing default apache2 installation as i use nginx.
-
-                sleep 10
-
                 fi
-
+                # Calling Function with param
                 install_php_and_libraries "$PHP_VERSION"
-                sleep 10
-
-                echo "Calling php version switcher function"
+                # Calling Function with param
                 switch_php_version "$PHP_MAJOR_VERSION"
-                sleep 10
 
             elif [[ "$PHP_MAJOR_VERSION" == "8" ]]; then
-
                 if ! command_exists "php${PHP_VERSION}"; then
-                    sudo apt update
-
                     echo "PHP "$PHP_VERSION" is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y
-
                 fi
+                # Calling Function with param
                 install_php_and_libraries "$PHP_VERSION"
+                # Calling Function with param
                 switch_php_version "$PHP_MAJOR_VERSION"
 
             else
                 echo "Unsupported PHP version in Detection of php."
             fi
-            # <<<-------------------------------------------->>>
-
-            
+            #<<<-------------------------------------------->>>            
         else
             echo "Failed to detect a valid PHP version in composer.json."
         fi
+        #<<<------------------------------------------------>>>
+
     else
         echo "Composer file not found in the specified Laravel app path."
     fi
+    #<<<------------------------------------------------>>>
+
 }
 
 
-# function call
+# Function call
 get_laravel_php_version
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -248,19 +228,6 @@ sed -i -e "s|^DB_DATABASE=.*|DB_DATABASE=\"$PROJECT_NAME\"|" \
 
 #<<<------------------------------------------------------------------------------------------------------------->>>
 
-# Check if MySQL is installed 
-# if ! command_exists mysql; then 
-#     echo "MySQL is not installed"
-#     sudo apt install mysql-server-8.0 -y
-
-#     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD';"
-#     exit
-#     sudo mysql_secure_installation -y
-#     sudo systemctl start mysql.service
-
-# fi
-
-# mysql -u "$DB_USERNAME" -p"$DB_PASSWORD" -e"create database if not exists $PROJECT_NAME;" || { echo "Faild to Create Mysql Database. Exiting."; exit 1; }
 
 #<<<------------------------------------------------------------------------------------------------------------->>>
 
@@ -305,7 +272,7 @@ sudo chown -R $USER:www-data bootstrap/cache
 
 #<<<------------------------------------------------------------------------------------------------------------->>>
 
-# configure nginx server
+# Configure nginx server
 # LISTEN_PORT=80
 ROOT_PATH="/var/www/$PROJECT_NAME/public"
 # FASTCGI_PASS="unix:/run/php/php8.1-fpm.sock"
