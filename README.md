@@ -85,7 +85,7 @@ This project is licensed under the MIT License. Feel free to customize and use i
 
 ### Nginx Template File:
 
-The Nginx template file (`/root/test/template`) is a placeholder for the server block configuration.
+The Nginx template file is a placeholder for the server block configuration.
 
 - Customize the file according to your project's requirements, updating placeholders with actual values.
 
