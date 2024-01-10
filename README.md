@@ -17,14 +17,13 @@ Before running the script, ensure the following prerequisites are met:
 ### 1. Clone Repository:
 ```bash
     git clone https://github.com/riyadrb/laravel-env-setup-automation.git
-    cd laravel-environment-setup-script
 ```
 
 ### 2. Prepare Nginx Template File:
 
-Inside the repository, you will find an Nginx template file located at. Make a copy of this template and customize it according to your project's needs.
+Inside the repository, you will find an Nginx template file, Make a copy of this template and customize it according to your project's needs.
 
-Update the placeholders for `DOMAIN_NAME`, `LISTEN_PORT`, `ROOT_PATH`, and `FASTCGI_PASS` with your specific values.
+Update the placeholders for `DOMAIN_NAME`, `LISTEN_PORT`, `ROOT_PATH`, and `FASTCGI_PASS` with your specific values if needed.
 
 ### 3. Run the Setup Script:
 
@@ -33,7 +32,7 @@ Update the placeholders for `DOMAIN_NAME`, `LISTEN_PORT`, `ROOT_PATH`, and `FAST
 ```
 ### 4. Follow On-Screen Instructions:
 
-The script will prompt you for information such as the project name, GitHub repository URL, MySQL username, database password, and domain name. Enter the required information as prompted.
+The script will prompt you for information such as the project name, GitHub repository URL, MySQL Username,MySQL Database Password, and Domain name. Enter the required information as prompted.
 
 ### 5. Automated Setup:
 
