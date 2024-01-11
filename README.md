@@ -65,9 +65,12 @@ If any issues occur during the setup, check the script logs for more details. Fe
 
 The Nginx template file provided in this repository serves as a starting point. Customize it further to meet the specific requirements of your Laravel application. And keep it in same directory where the main.sh script file is located.
 
-<!-- ### License:
+### SSL Certificate (Optional):
+Certbot for SSL certificate installation is commented out. Uncomment and customize if SSL is required.
 
-This project is licensed under the MIT License. Feel free to customize and use it according to your needs. -->
+### License:
+
+This project is licensed under the MIT License. Feel free to customize and use it according to your needs.
 
 ## Script Details:
 
@@ -92,7 +95,6 @@ The Nginx template file is a placeholder for the server block configuration.
 ### Additional Configuration:
 
 - The script utilizes `jq` for parsing JSON and `expect` for automating MySQL setup.
-- Certbot for SSL certificate installation is commented out. Uncomment and customize if SSL is required.
 
 <!-- ## Author:
 
