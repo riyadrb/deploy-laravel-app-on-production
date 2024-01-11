@@ -18,7 +18,7 @@ read -p "Port Number: " LISTEN_PORT
 
 
 mkdir -p "/var/www/$PROJECT_NAME"
-cd "/var/www/$PROJECT_NAME"
+cd "/var/www/$PROJECT_NAME" || exit
 
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -27,13 +27,13 @@ required_commands=("git" "curl" "unzip" "expect" "jq")
 
 for cmd in "${required_commands[@]}"; 
 do 
-    if ! command_exists $cmd; then
+    if ! command_exists "$cmd"; then
         echo "$cmd is Not Installed!"
         sudo apt install "$cmd" -y
     fi
 done
 
-git clone $GITHUB_URL . || { echo "Failed to Clone Repository. Exiting"; exit 1; }
+git clone "$GITHUB_URL" . || { echo "Failed to Clone Repository. Exiting"; exit 1; }
 
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -85,24 +85,24 @@ function install_php_and_libraries() {
     PHP_VERSION=$1
 
     sudo apt install -y \
-    php${PHP_VERSION}-fpm \
-    php${PHP_VERSION}-mysql \
-    php${PHP_VERSION}-zip \
-    php${PHP_VERSION}-curl \
-    php${PHP_VERSION}-gd \
-    php${PHP_VERSION}-intl \
-    php${PHP_VERSION}-imagick \
-    php${PHP_VERSION}-imap \
-    php${PHP_VERSION}-memcache \
-    php${PHP_VERSION}-pspell \
-    php${PHP_VERSION}-sqlite3 \
-    php${PHP_VERSION}-tidy \
-    php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-xmlrpc \
-    php${PHP_VERSION}-xsl \
-    php${PHP_VERSION}-mbstring \
-    php${PHP_VERSION}-gettext \
-    php${PHP_VERSION}-dom     
+    php"${PHP_VERSION}"-fpm \
+    php"${PHP_VERSION}"-mysql \
+    php"${PHP_VERSION}"-zip \
+    php"${PHP_VERSION}"-curl \
+    php"${PHP_VERSION}"-gd \
+    php"${PHP_VERSION}"-intl \
+    php"${PHP_VERSION}"-imagick \
+    php"${PHP_VERSION}"-imap \
+    php"${PHP_VERSION}"-memcache \
+    php"${PHP_VERSION}"-pspell \
+    php"${PHP_VERSION}"-sqlite3 \
+    php"${PHP_VERSION}"-tidy \
+    php"${PHP_VERSION}"-xml \
+    php"${PHP_VERSION}"-xmlrpc \
+    php"${PHP_VERSION}"-xsl \
+    php"${PHP_VERSION}"-mbstring \
+    php"${PHP_VERSION}"-gettext \
+    php"${PHP_VERSION}"-dom     
 
     if [[ $? == 0 ]]; then
         echo "PHP ${PHP_VERSION} and required libraries have been successfully installed."
@@ -116,9 +116,9 @@ function install_php_and_libraries() {
 # Switching php version
 function switch_php_version() {
     if [[ "$1" == "7" ]]; then
-        sudo update-alternatives --set php /usr/bin/php${PHP_VERSION}
+        sudo update-alternatives --set php /usr/bin/php"${PHP_VERSION}"
     elif [[ "$1" == "8" ]]; then
-        sudo update-alternatives --set php /usr/bin/php${PHP_VERSION}
+        sudo update-alternatives --set php /usr/bin/php"${PHP_VERSION}"
     else
         echo "Unsupported PHP Version."
         
@@ -159,7 +159,7 @@ function get_laravel_php_version() {
                 if ! command_exists "php${PHP_VERSION}"; then
                     sudo add-apt-repository ppa:ondrej/php -y   #Added Ondrej repo as ubuntu 22.04's default does not have php7.4
                     sudo apt update
-                    echo "PHP "$PHP_VERSION" is not installed. Installing..."
+                    echo "PHP $PHP_VERSION is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y  # It will avoid installing default apache2 installation as i use nginx.
                 fi
                 # Calling Function with param
@@ -169,7 +169,7 @@ function get_laravel_php_version() {
 
             elif [[ "$PHP_MAJOR_VERSION" == "8" ]]; then
                 if ! command_exists "php${PHP_VERSION}"; then
-                    echo "PHP "$PHP_VERSION" is not installed. Installing..."
+                    echo "PHP $PHP_VERSION is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y
                 fi
                 # Calling Function with param
@@ -255,8 +255,8 @@ php artisan migrate:fresh --seed || { echo "Failed to Run Migrations. Exiting.";
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 
-sudo chown -R $USER:www-data storage
-sudo chown -R $USER:www-data bootstrap/cache
+sudo chown -R "$USER":www-data storage
+sudo chown -R "$USER":www-data bootstrap/cache
 
 #<<<------------------------------------------------------------------------------------------------------------->>>
 
@@ -273,7 +273,7 @@ sed -e "s|DOMAIN_NAME|$DOMAIN_NAME|g" \
     -e "s|FASTCGI_PASS|$FASTCGI_PASS|g" "/root/test/template" > "/etc/nginx/sites-available/$DOMAIN_NAME"
 
 
-ln -s  /etc/nginx/sites-available/$DOMAIN_NAME /etc/nginx/sites-enabled
+ln -s  /etc/nginx/sites-available/"$DOMAIN_NAME" /etc/nginx/sites-enabled
 nginx -t
 systemctl reload nginx
 #<<<------------------------------------------------------------------------------------------------------------->>>
