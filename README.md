@@ -15,6 +15,8 @@ Before running the script, ensure the following prerequisites are met:
 ## Usage
 
 ### 1. Clone Repository:
+Clone the repository to your home directory:
+
 ```bash
     git clone https://github.com/riyadrb/laravel-env-setup-automation.git
 ```
