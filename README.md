@@ -65,14 +65,14 @@ If any issues occur during the setup, check the script logs for more details. Fe
 
 ### Customizing Nginx Configuration:
 
-The Nginx template file provided in this repository serves as a starting point. Customize it further to meet the specific requirements of your Laravel application. And keep it in same directory where the main.sh script file is located.
+The Nginx template file provided in this repository serves as a starting point. Customize it further to meet the specific requirements of your Laravel application. And keep it in same directory where the **setup.sh** script file is located.
 
 ### SSL Certificate (Optional):
 Certbot for SSL certificate installation is commented out. Uncomment and customize if SSL is required.
 
 ### License:
 
-This project is licensed under the MIT License. Feel free to customize and use it according to your needs.
+This project is licensed under the [MIT License](https://opensource.org/license/mit/) License. Feel free to customize and use it according to your needs.
 
 ## Script Details:
 
@@ -104,5 +104,5 @@ The Nginx template file is a placeholder for the server block configuration.
 - [Your Email]
 - [Your GitHub] -->
 
-Feel free to contribute to the improvement of this script or report any issues. Happy coding!
+#### Feel free to contribute to the improvement of this script or report any issues. Happy coding!
 
