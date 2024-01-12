@@ -30,7 +30,7 @@ Update the placeholders for `DOMAIN_NAME`, `LISTEN_PORT`, `ROOT_PATH`, and `FAST
 ### 3. Run the Setup Script:
 
 ```bash
-    ./main.sh
+    ./setup.sh
 ```
 ### 4. Follow On-Screen Instructions:
 
@@ -72,7 +72,7 @@ Certbot for SSL certificate installation is commented out. Uncomment and customi
 
 ### License:
 
-This project is licensed under the [MIT License](https://opensource.org/license/mit/) License. Feel free to customize and use it according to your needs.
+This project is licensed under the [MIT License](https://opensource.org/license/mit/). Feel free to customize and use it according to your needs.
 
 ## Script Details:
 
