@@ -1,4 +1,4 @@
-# Laravel Environment Setup & Software Deployment Script
+# Laravel Software Deployment Script
 Automate the setup of a Laravel environment on your server with this script. It streamlines the installation and configuration of essential components, including Nginx, PHP (supports multiple versions), MySQL, Composer, and Laravel. The script intelligently checks your system for required software and installs them if missing. It seamlessly handles PHP version requirements, allowing you to switch between versions as needed. Save time and effort in setting up your Laravel application with this efficient and automated script.
 
 ## Effortless Deployment:
