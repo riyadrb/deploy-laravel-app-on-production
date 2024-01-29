@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Set the script directory
-DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$DIR" ]]; then
-    DIR="$PWD"
-fi
+# DIR="${BASH_SOURCE%/*}"
+# if [[ ! -d "$DIR" ]]; then
+#     DIR="$PWD"
+# fi
 
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -21,7 +21,6 @@ read -s -p "Database Password: " DB_PASSWORD
 echo
 read -p "Enter Domain Name: " DOMAIN_NAME
 read -p "Port Number: " LISTEN_PORT
-
 
 mkdir -p "/var/www/$PROJECT_NAME"
 cd "/var/www/$PROJECT_NAME" || exit
@@ -46,7 +45,6 @@ git clone "$GITHUB_URL" . || { echo "Failed to Clone Repository. Exiting"; exit 
 # Installing composer and laravel
 function install_laravel() {
     if ! command_exists composer &> /dev/null; then
-        # Installing composer
         echo "Installing composer..."
         sudo apt install php-cli php-mbstring
         curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
@@ -55,7 +53,6 @@ function install_laravel() {
              echo "ERROR: Composer installation failed" >&2
             exit 1
         fi
-
         echo "Composer has been installed successfully."
     else
         echo "Composer is already installed."
@@ -70,7 +67,6 @@ function install_laravel() {
     fi
 }
 
-# Function call for installing laravel 
 install_laravel
 
 
@@ -134,7 +130,7 @@ function switch_php_version() {
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
 
-# Detecting php version according to app
+# Detecting php version according to the app
 function get_laravel_php_version() {
     LARAVEL_PATH="/var/www/$PROJECT_NAME"  
     #<<<------------------------------------------------>>>
@@ -168,9 +164,7 @@ function get_laravel_php_version() {
                     echo "PHP $PHP_VERSION is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y  # It will avoid installing default apache2 installation as i use nginx.
                 fi
-                # Calling Function with param
                 install_php_and_libraries "$PHP_VERSION"
-                # Calling Function with param
                 switch_php_version "$PHP_MAJOR_VERSION"
 
             elif [[ "$PHP_MAJOR_VERSION" == "8" ]]; then
@@ -178,9 +172,7 @@ function get_laravel_php_version() {
                     echo "PHP $PHP_VERSION is not installed. Installing..."
                     sudo apt install "php${PHP_VERSION}" "php${PHP_VERSION}"-fpm -y
                 fi
-                # Calling Function with param
                 install_php_and_libraries "$PHP_VERSION"
-                # Calling Function with param
                 switch_php_version "$PHP_MAJOR_VERSION"
 
             else
@@ -199,8 +191,6 @@ function get_laravel_php_version() {
 
 }
 
-
-# Function call
 get_laravel_php_version
 
 #<<<-------------------------------------------------------------------------------------------------------------->>>
@@ -233,9 +223,7 @@ sed -i -e "s|^DB_DATABASE=.*|DB_DATABASE=\"$PROJECT_NAME\"|" \
 if ! command_exists mysql; then
     echo "MySQL is not installed"
     sudo apt install mysql-server-8.0 -y
-    # Set up MySQL initially with root password
     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD';"
-    # Restart MySQL service to apply changes
     sudo systemctl restart mysql.service
 fi
 
@@ -245,7 +233,6 @@ mysql -u "$DB_USERNAME" -p"$DB_PASSWORD" -e "SELECT 1;"  # This line will authen
 # Check the exit status of the above command to ensure successful authentication
 if [[ $? == 0 ]]; then
     echo "MySQL setup successful. Proceeding with database operations..."
-    # Create database if it doesn't exist
     mysql -u "$DB_USERNAME" -p"$DB_PASSWORD" -e"CREATE DATABASE IF NOT EXISTS $PROJECT_NAME;" || { echo "Faild to Create Mysql Database. Exiting."; exit 1; }
     
     
@@ -266,7 +253,7 @@ sudo chown -R "$USER":www-data bootstrap/cache
 
 #<<<------------------------------------------------------------------------------------------------------------->>>
 
-# Configure nginx server
+# Configure Nginx server
 ROOT_PATH="/var/www/$PROJECT_NAME/public"
 FASTCGI_PASS="unix:/run/php/php$PHP_VERSION-fpm.sock"
 
